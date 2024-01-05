@@ -1,49 +1,38 @@
-#define ntc_pin A0         // Pin, to which the voltage divider is connected
-#define vd_power_pin 2        // 5V for the voltage divider
-#define nominal_resistance 100000       //Nominal resistance at 25⁰C
-#define nominal_temeprature 25   // temperature for nominal resistance (almost always 25⁰ C)
-#define samplingrate 5    // Number of samples
-#define beta 3950  // The beta coefficient or the B value of the thermistor (usually 3000-4000) check the datasheet for the accurate value.
-#define Rref 10000   //Value of  resistor used for the voltage divider
-int samples = 0;   //array to store the samples
+const double VCC = 3.3;             // NodeMCU on board 3.3v vcc
+const double R2 = 10000;            // 10k ohm series resistor
+const double adc_resolution = 1023*3.3; // 10-bit adc
 
+// const double A = 0.001129148;   // thermistor equation parameters
+// const double B = 0.000234125;
+// const double C = 0.0000000876741; 
+const double A = 0.8272069482e-3;   // thermistor equation parameters
+const double B = 2.087897328e-4;
+const double C = 0.8062131944e-7; 
 
 void setup() {
-  // put your setup code here, to run once:
- Serial.begin(115200);   //initialize serial communication at a baud rate of 9600
-
+  Serial.begin(9600);  /* Define baud rate for serial communication */
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
- uint8_t i;
-  float average;
-samples = 0;
-  // take voltage readings from the voltage divider
-// digitalWrite(vd_power_pin,HIGH);
-  for (i=0; i< samplingrate; i++) {
-   samples += analogRead(ntc_pin);
-   delay(10);
-  }
-// digitalWrite(vd_power_pin,LOW)
-  average = 0;
-average = samples/ samplingrate;
-  Serial.print("ADC readings ");
-  Serial.println(average);
-  // Calculate NTC resistance
-  average = 1023 / average - 1;
-  average = Rref/ average;
-  Serial.print("Thermistor resistance ");
-  Serial.println(average);
-  float temperature;
-  temperature = average / nominal_resistance;     // (R/Ro)
-  temperature = log(temperature);                  // ln(R/Ro)
-  temperature /= beta;                   // 1/B * ln(R/Ro)
-  temperature += 1.0 / (nominal_temeprature + 273.15); // + (1/To)
-  temperature = 1.0 / temperature;                 // Invert
- temperature -= 273.15;                         // convert absolute temp to C
-  Serial.print("Temperature ");
+  double Vout, Rth, temperature, adc_value; 
+
+  adc_value = analogRead(A0);
+  Vout = (adc_value * VCC) / adc_resolution;
+  Rth = (VCC * R2 / Vout) - R2;
+  Serial.println(" adc value");
+  Serial.println(adc_value);
+  Serial.println("rth");
+  Serial.println(Rth);
+
+/*  Steinhart-Hart Thermistor Equation:
+ *  Temperature in Kelvin = 1 / (A + B[ln(R)] + C[ln(R)]^3)
+ *  where A = 0.001129148, B = 0.000234125 and C = 8.76741*10^-8  */
+  temperature = (1 / (A + (B * log(Rth)) + (C * pow((log(Rth)),3))));   // Temperature in kelvin
+
+  temperature = temperature - 273.15;  // Temperature in degree celsius
+  Serial.print("Temperature = ");
   Serial.print(temperature);
-  Serial.println(" *C");
-  delay(1000);
+  Serial.println(" degree celsius");
+  delay(500);
 }
+
