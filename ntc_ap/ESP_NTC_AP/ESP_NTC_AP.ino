@@ -6,6 +6,9 @@
 
 #include "ESPFrontEnd.h"
 
+
+#include <ESP_EEPROM.h>
+
 const char* ssid = "hamids_iPad";
 
 const byte DNS_PORT = 53;
@@ -34,12 +37,14 @@ const int resolution = 8;
 
 String LightMode;
 
+String setTemp;
+
 long int lastTimeGasRead;
 
 
 const double VCC = 3.3;             // NodeMCU on board 3.3v vcc
 const double R2 = 10000;            // 10k ohm series resistor
-const double adc_resolution = 1023*3.3; // 10-bit adc
+const double adc_resolution = 1023; // 10-bit adc
 
 // const double A = 0.001129148;   // thermistor equation parameters
 // const double B = 0.000234125;
@@ -47,6 +52,7 @@ const double adc_resolution = 1023*3.3; // 10-bit adc
 const double A = 0.8272069482e-3;   // thermistor equation parameters
 const double B = 2.087897328e-4;
 const double C = 0.8062131944e-7; 
+
 ESP8266WebServer webServer(80);
 
 
@@ -186,6 +192,16 @@ void handleLightMode(){
   webServer.send(302, "text/plain", "Updated-- Press Back Button");
 }
 
+void handleSetTemp(){
+  Serial.println("setting the light mode");
+  setTemp=webServer.arg(0);
+
+  EEPROM.put(0, setTemp);
+  EEPROM.commit();
+  Serial.println(setTemp);
+  webServer.send(302, "text/plain", "Updated-- Press Back Button");
+}
+
 void handleRoot() 
 {
   LightMode="Stable";
@@ -217,7 +233,12 @@ webServer.send_P(200, "text/html;charset=utf-8", webpage0);
 void handleADC() {
   double Vout, Rth, temperature, adc_value; 
 
-  adc_value = analogRead(A0);
+for (int i=0; i<10;i++){
+  adc_value += analogRead(A0);
+  delay(100);
+}
+adc_value=adc_value/10;
+
   Vout = (adc_value * VCC) / adc_resolution;
   Rth = (VCC * R2 / Vout) - R2;
   Serial.println(" adc value");
@@ -236,11 +257,13 @@ void handleADC() {
   Serial.println(" degree celsius");
 
  String adcValue = String(temperature);
+//  String adcValue=String(adc_value);
  webServer.send(200, "text/plane", adcValue); //Send ADC value only to client ajax request
 }
 
 void setup() {
   Serial.begin(115200);
+  EEPROM.begin(512);
 
   attachInterrupt(digitalPinToInterrupt(ldrPin), TurnOnLeds, FALLING);
   attachInterrupt(digitalPinToInterrupt(touchPin),TouchFunc,RISING);
@@ -251,7 +274,7 @@ void setup() {
   WiFi.mode(WIFI_AP);
   
   WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-  WiFi.softAP("Virada Light");
+  WiFi.softAP("Virada Thermo");
 
   dnsServer.start(DNS_PORT, "*", apIP);
 
@@ -272,6 +295,7 @@ void setup() {
 
   webServer.on("/", handleRoot);
   webServer.on("/setRGB",handleForm);
+  webServer.on("/setTemp",handleSetTemp);
   webServer.on("/readADC", handleADC); //This page is called by java Script AJAX
   webServer.on("/setLightMode",handleLightMode);
 //  ElegantOTA.begin(&webServer);
@@ -297,10 +321,14 @@ if (LightMode=="breath"){
   breath();
 }
 
-if(millis()-lastTimeGasRead>2000){
+if(millis()-lastTimeGasRead>1000){
   double Vout, Rth, temperature, adc_value; 
+for (int i=0; i<10;i++){
+  adc_value += analogRead(A0);
+  delay(100);
+}
+adc_value=adc_value/10;
 
-  adc_value = analogRead(A0);
   Vout = (adc_value * VCC) / adc_resolution;
   Rth = (VCC * R2 / Vout) - R2;
   Serial.println(" adc value");
@@ -314,6 +342,14 @@ if(millis()-lastTimeGasRead>2000){
   temperature = (1 / (A + (B * log(Rth)) + (C * pow((log(Rth)),3))));   // Temperature in kelvin
 
   temperature = temperature - 273.15;  // Temperature in degree celsius
+
+  if (temperature>(setTemp.toInt())){
+    digitalWrite(16,LOW);
+  }
+
+  if (temperature<((setTemp.toInt())-2)){
+    digitalWrite(16,HIGH);
+  }
   Serial.print("Temperature = ");
   Serial.print(temperature);
   Serial.println(" degree celsius");

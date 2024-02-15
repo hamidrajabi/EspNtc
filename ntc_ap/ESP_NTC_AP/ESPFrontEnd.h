@@ -1,5 +1,6 @@
 //Below the string splitted 
 const char webpage0[] PROGMEM = R"=====(
+
 <!DOCTYPE html><html><head><title lang="fa">سلام</title><meta name='mobile-web-app-capable' content='yes' />
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'>
 
@@ -205,15 +206,7 @@ const char webpage0[] PROGMEM = R"=====(
 <div class="container">
 
     <div style="grid-area: header;padding:10px;color:white">
-        <h1 dir="rtl" class="header" style="text-align: center;">به پنل کنترل ویرالایت خوش آمدید.</h1>
-    </div>
-
-    <div class="colorPicker">
-      <canvas id='colorspace' class="colorSpace"></canvas>
-    </div>
-
-    <div style="grid-area:IntensityRange">
-        <input type="range" style="transform: rotate(-90deg);" orient="vertical" min="0" max="100"/>
+        <h1 dir="rtl" class="header" style="text-align: center;">به پنل کنترل ویراترمو خوش آمدید.</h1>
     </div>
 
     <div class="gasGraph">
@@ -224,94 +217,104 @@ const char webpage0[] PROGMEM = R"=====(
         <canvas id="chartJSContainer" width="50%" style="vertical-align: 50%"></canvas>
     </div>
 
-    <div class="lightMode">
-          <h1 dir="rtl">حالت های نمایش نور</h1>
-  <div class="button button-1" id="FlickerButton">چشمک زن</div>
-  <br>
-  <div class="button button-1" id="BreathButton">تنفس</div>
-  <br>
-  <div class="button button-1">رنگین کمان</div>
+    <div>
 
-    </div>
 
-    <div class="timer">
-        <div class="timer"></div>
-    </div>
+<form action="">
+  <label for="temp">دما</label>
+  <input type="number" id="temp" name="quantity" min="0" max="150">
+  <input type="button" onclick="submitTemp()" value="Submit">
+  
+  </form>
 
+      </div>
+
+
+ 
     <div style="grid-area:footer">
-        یراس پشتیبانی و اطلاعات بیشتر به وب سایت رکت ویرا دانش آسال مراجعه نمایید
+        برای پشتیبانی و اطلاعات بیشتر به وب سایت شرکت دانش بنیان ویرا دانش آسال مراجعه نمایید
     </div>
 
 </div>
 
+<script>
+  function submitTemp() {
+    var req = new XMLHttpRequest();
+    var temp=document.getElementById("temp").value;
+    console.log("set temp");
+    req.open('GET', 'setTemp'+'?' + "temp="+temp, true);
+    req.send();
+}
+  </script>
+
 <!-- Handling the colorPicker -->
-<script type='text/javascript'>
-    (function () {
-     var canvas = document.getElementById('colorspace');
-     var ctx = canvas.getContext('2d');
-     function drawCanvas() {
-     var colours = ctx.createLinearGradient(0, 0, window.innerWidth/1.5, 0);
-     for(var i=0; i <= 360; i+=10) {
-     colours.addColorStop(i/360, 'hsl(' + i + ', 100%, 50%)');
-     }
-     ctx.fillStyle = colours;
-     ctx.fillRect(0, 0, window.innerWidth/1.5, window.innerHeight);
-     var luminance = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
-     luminance.addColorStop(0, '#ffffff');
-     luminance.addColorStop(0.05, '#ffffff');
-     luminance.addColorStop(0.5, 'rgba(0,0,0,0)');
-     luminance.addColorStop(0.95, '#000000');
-     luminance.addColorStop(1, '#000000');
-     ctx.fillStyle = luminance;
-     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-     }
-     var eventLocked = false;
+// <script type='text/javascript'>
+//     (function () {
+//      var canvas = document.getElementById('colorspace');
+//      var ctx = canvas.getContext('2d');
+//      function drawCanvas() {
+//      var colours = ctx.createLinearGradient(0, 0, window.innerWidth/1.5, 0);
+//      for(var i=0; i <= 360; i+=10) {
+//      colours.addColorStop(i/360, 'hsl(' + i + ', 100%, 50%)');
+//      }
+//      ctx.fillStyle = colours;
+//      ctx.fillRect(0, 0, window.innerWidth/1.5, window.innerHeight);
+//      var luminance = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+//      luminance.addColorStop(0, '#ffffff');
+//      luminance.addColorStop(0.05, '#ffffff');
+//      luminance.addColorStop(0.5, 'rgba(0,0,0,0)');
+//      luminance.addColorStop(0.95, '#000000');
+//      luminance.addColorStop(1, '#000000');
+//      ctx.fillStyle = luminance;
+//      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+//      }
+//      var eventLocked = false;
 
-     function handleEvent(clientX, clientY) {
-     if(eventLocked) {
-     return;
-     }
-     function colourCorrect(v) {
-     return Math.round(1023-(v*v)/64);
-     }
-     var data = ctx.getImageData(clientX, clientY, 1, 1).data;
-     var params = [
-     'r=' + colourCorrect(data[0]),
-     'g=' + colourCorrect(data[1]),
-     'b=' + colourCorrect(data[2])
-     ].join('&');
-     var req = new XMLHttpRequest();
-     req.open('GET', 'setRGB'+'?' + params, true); //Handle readADC server on ESP8266
-//     req.open('POST', '?' + params, true);
-     req.send();
-     eventLocked = true;
-     req.onreadystatechange = function() {
-     if(req.readyState == 4) {
-     eventLocked = false;
-     }
-     }
-     console.log(params);
-     }
+//      function handleEvent(clientX, clientY) {
+//      if(eventLocked) {
+//      return;
+//      }
+//      function colourCorrect(v) {
+//      return Math.round(1023-(v*v)/64);
+//      }
+//      var data = ctx.getImageData(clientX, clientY, 1, 1).data;
+//      var params = [
+//      'r=' + colourCorrect(data[0]),
+//      'g=' + colourCorrect(data[1]),
+//      'b=' + colourCorrect(data[2])
+//      ].join('&');
+//      var req = new XMLHttpRequest();
+//      req.open('GET', 'setRGB'+'?' + params, true); //Handle readADC server on ESP8266
+// //     req.open('POST', '?' + params, true);
+//      req.send();
+//      eventLocked = true;
+//      req.onreadystatechange = function() {
+//      if(req.readyState == 4) {
+//      eventLocked = false;
+//      }
+//      }
+//      console.log(params);
+//      }
 
-     canvas.addEventListener('click', function(event) {
-     handleEvent(event.clientX, event.clientY, true);
-     }, false);
+//      canvas.addEventListener('click', function(event) {
+//      handleEvent(event.clientX, event.clientY, true);
+//      }, false);
 
-     canvas.addEventListener('touchmove', function(event){
-     handleEvent(event.touches[0].clientX, event.touches[0].clientY);
-    }, false);
+//      canvas.addEventListener('touchmove', function(event){
+//      handleEvent(event.touches[0].clientX, event.touches[0].clientY);
+//     }, false);
      
-     function resizeCanvas() {
-     canvas.width = window.innerWidth/1.5;
-     canvas.height = window.innerHeight/1.5;
-     drawCanvas();
-     }
-     window.addEventListener('resize', resizeCanvas, false);
-     resizeCanvas();
-     drawCanvas();
-     document.ontouchmove = function(e) {e.preventDefault()};
-     })();
-</script>
+//      function resizeCanvas() {
+//      canvas.width = window.innerWidth/1.5;
+//      canvas.height = window.innerHeight/1.5;
+//      drawCanvas();
+//      }
+//      window.addEventListener('resize', resizeCanvas, false);
+//      resizeCanvas();
+//      drawCanvas();
+//      document.ontouchmove = function(e) {e.preventDefault()};
+//      })();
+// </script>
 
 <!-- Gauge Code -->
 <script type="text/javascript">
@@ -328,9 +331,9 @@ var Gauge=null;
       var options2 = {
       type: 'doughnut',
       data: {
-        labels: ["درصد غلظت گاز"],
+        labels: ["دما"],
         datasets: [{
-          label: 'درصد غلظت گاز',
+          label: 'دما',
           data: [percentage,19],
           backgroundColor: ['rgb(255, 99, 132)',
             '#ccc',]
@@ -339,6 +342,13 @@ var Gauge=null;
       options: {
         rotation: 270, // start angle in degrees
         circumference: 180, // sweep angle in degrees
+        plugins: {
+            title: {
+                display: true,
+                text: percentage,
+                position:'bottom'
+            }
+        }
       }
     }
 
@@ -374,7 +384,7 @@ function showGraph()
         data: {
             labels: timeStamp,  //Bottom Labeling
             datasets: [{
-                label: "غلظت گاز",
+                label: "دما",
                 fill: false,  //Try with true
                 backgroundColor: 'rgba( 243, 156, 18 , 1)', //Dot marker color
                 borderColor: 'rgba( 243, 156, 18 , 1)', //Graph Line Color
