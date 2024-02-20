@@ -1,13 +1,11 @@
 //Below the string splitted 
 const char webpage0[] PROGMEM = R"=====(
 
-
 <!DOCTYPE html><html><head><title lang="fa">سلام</title><meta name='mobile-web-app-capable' content='yes' />
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style='margin: 0px; padding: 0px;'>
 
 
 <style type="text/css">
@@ -26,103 +24,52 @@ const char webpage0[] PROGMEM = R"=====(
 }
 
  html{
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background:  #23a6d5
   }
-  
+/*   
  .container{
         display: grid;
         font-family:'iranSANS';
         grid-template-areas:"header header header"
-                        "ColorPicker ColorPicker IntensityRange "
-                        "GasGraph GasGauge LightMode"
-                        "Timer Timer Timer"
+                        "GasGraph GasGauge Timer"
+                        
                         "footer footer footer";
-        gap: 20px 5px;
+        /* gap: 20px 5px; */
   /*grid-template-rows: 1fr 4fr 2fr 1fr 1fr;*/
-    }
+    } */
 
-   .colorPicker{
-//      border: 5px solid red;
-      border-radius:50%;
-      grid-area:ColorPicker;
-      box-shadow: 5px 10px 18px #888888;
-//      padding: 10px;
-      height:500px;
-      width:500px;
-   }
-   .colorSpace{
-    aspect-ratio: 1;
-    border-radius:50%;
-    width:500px;
-   }
+ 
    .gasGraph{
-//      border: 5px solid red;
       border-radius:20%;
       grid-area:GasGraph;
-      position: relative;
-      width: 50%;
+      /* position: relative; */
+      width: 100%;
       box-shadow: 5px 10px 18px #888888; 
-      padding: 10px;
+      /* display: inline-block; */
+      /* padding: 10px; */
     }
 
     .gasGauge{
-//      border: 5px solid red;
       border-radius:20%;
       grid-area:GasGauge;
-      position: relative;
-      width: 50%;
-      
+      /* position: relative; */
+      width: 100%;
       box-shadow: 5px 10px 18px #888888;  
-      padding: 10px;
+      /* display: inline-block; */
+      /* padding: 10px; */
     }
     
-    .lightMode{
-//      border: 5px solid red;
-      border-radius:20%;
-      grid-area:LightMode;
-      box-shadow: 5px 10px 18px #888888; 
-      padding: 10px;
-      color:white;
-    }
+ 
     
     .timer{
-//      border: 5px solid red;
       border-radius:20%;
-      grid-area:Timer;
-      box-shadow: 5px 10px 18px #888888;  box-shadow: 5px 10px 18px #888888;
-      padding: 10px;
-      width:20%;
+      box-shadow: 5px 10px 18px #888888; 
+      /* display: inline-block; */
+      /* padding: 10px; */
+      width:100%;
     }
     
-    @media only screen and (max-width: 800px) {
-    .container{
-        display: grid;
-        grid-template-areas:"header header"
-                        "ColorPicker IntensityRange"
-                        "GasGraph GasGraph"
-                        "GasGauge GasGauge"
-                        "LightMode LightMode"
-                        "Timer Timer"
-                        "footer footer";
-    }
-    .colorPicker{
-//      border: 5px solid red;
-      border-radius:50%;
-      grid-area:ColorPicker;
-      box-shadow: 5px 10px 18px #888888;
-//      padding: 10px;
-      height:300px;
-      width:300px;
-   }
-   .colorSpace{
-    aspect-ratio: 1;
-    border-radius:50%;
-    width:300px;
-    height:300px;
-   }
-    }
     
-
 
     .button {
       width: 170px;
@@ -154,8 +101,7 @@ const char webpage0[] PROGMEM = R"=====(
 
     .timer {
       font-family: sans-serif;
-      display: inline-block;
-      padding: 24px 32px;
+      /* display: inline-block; */
       border-radius: 30px;
       background: gray;
     }
@@ -203,121 +149,82 @@ const char webpage0[] PROGMEM = R"=====(
 </script>
 <!-- The chartJs library End -->
 
+<body style='margin: 0px; padding: 0px;font-family:'iranSANS';'>
 
-<div class="container">
-
-    <div style="grid-area: header;padding:10px;color:white">
-        <h1 dir="rtl" class="header" style="text-align: center;">به پنل کنترل ویراترمو خوش آمدید.</h1>
+<table  style="width:100%;height:100%;font-family:'iranSANS';">
+  <tr>
+    <th colspan="3" style="width:100%">
+    <div style="padding:10px;color:white;">
+        <h1 dir="rtl" class="header" style="text-align: center;">به پنل کنترل ویرادا  خوش آمدید.</h1>
     </div>
+    </th>
+  </tr>
 
-    <div id = "tempGague" class="gasGraph" style="font-size: 100px;text-align:center">
-          // <canvas id="temperatureGauge" width="50%" style="vertical-align: 50%"></canvas>
+  <tr>
+    <th>
+        <div id = "tempGague" class="gasGauge" style="font-size: 200%;text-align:center">
+        </div>
+    </th>
+    <th>
+        <div  id = "humidityGauge" class="gasGauge" style="font-size: 200%;text-align:center">
+        </div>
+    </th>
+    <th>
+        <div  id = "timeCounter"  class="gasGauge" style="font-size: 200%;text-align:center">
+        </div>
+    </th>
+  </tr>
 
-    </div>
+  <tr>
+    <th >
+      <form action="">
+        <label for="temp">دما</label>
+        <input type="number" id="temp" name="quantity" min="0" max="150" style="font-size: 300%;">
+        <input type="button" onclick="submitTemp()" value="Submit">
+      </form>
+    </th>
+    <th >
+      <form action="">
+        <label for="temp">رطوبت</label>
+        <input type="number" id="temp" name="quantity" min="0" max="150" style="font-size: 300%;">
+        <input type="button" onclick="submitTemp()" value="Submit">
+      </form>
+    </th>
+     <th >
+      <form action="">
+        <label for="temp">زمان</label>
+        <input type="number" id="temp" name="quantity" min="0" max="150" style="font-size: 300%;">
+        <input type="button" onclick="submitTemp()" value="Submit">
+      </form>
+    </th>
+  </tr>
+  <tr>
+    <th colspan=3>
+      <div>
+          برای پشتیبانی و اطلاعات بیشتر به وب سایت شرکت دانش بنیان ویرا دانش آسال مراجعه نمایید
+      </div>
+    </th>
+  </tr>
+</table>
 
-    <div  id = "humidityGauge" class="gasGauge" style="font-size: 100px;text-align:center">
-        // <canvas id="humidityGauge" width="50%" style="vertical-align: 50%"></canvas>
-    </div>
-
-    <div>
+</body>
 
 
-<form action="">
-  <label for="temp">دما</label>
-  <input type="number" id="temp" name="quantity" min="0" max="150">
-  <input type="button" onclick="submitTemp()" value="Submit">
-  
-  </form>
-</div>
 
-
- 
-    <div style="grid-area:footer">
-        برای پشتیبانی و اطلاعات بیشتر به وب سایت شرکت دانش بنیان ویرا دانش آسال مراجعه نمایید
-    </div>
-
-</div>
 
 <script>
+  document.getElementById("tempGague").innerHTML = "دما "+"<br />"+ +String(20)+"°";
+  document.getElementById("humidityGauge").innerHTML = "رطوبت \n" +"<br />"+ String(2000000)+"%";
+  document.getElementById("timeCounter").innerHTML = " زمان باقی مانده\n" +"<br />"+ "155 دقیقه";
+    function submitTemp() {
+      var req = new XMLHttpRequest();
+      var temp=document.getElementById("temp").value;
+      console.log("set temp");
+      req.open('GET', 'setTemp'+'?' + "temp="+temp, true);
+      req.send();
+  }
+</script>
 
-
-  function submitTemp() {
-    var req = new XMLHttpRequest();
-    var temp=document.getElementById("temp").value;
-    console.log("set temp");
-    req.open('GET', 'setTemp'+'?' + "temp="+temp, true);
-    req.send();
-}
-  </script>
-
-<!-- Handling the colorPicker -->
-// <script type='text/javascript'>
-//     (function () {
-//      var canvas = document.getElementById('colorspace');
-//      var ctx = canvas.getContext('2d');
-//      function drawCanvas() {
-//      var colours = ctx.createLinearGradient(0, 0, window.innerWidth/1.5, 0);
-//      for(var i=0; i <= 360; i+=10) {
-//      colours.addColorStop(i/360, 'hsl(' + i + ', 100%, 50%)');
-//      }
-//      ctx.fillStyle = colours;
-//      ctx.fillRect(0, 0, window.innerWidth/1.5, window.innerHeight);
-//      var luminance = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
-//      luminance.addColorStop(0, '#ffffff');
-//      luminance.addColorStop(0.05, '#ffffff');
-//      luminance.addColorStop(0.5, 'rgba(0,0,0,0)');
-//      luminance.addColorStop(0.95, '#000000');
-//      luminance.addColorStop(1, '#000000');
-//      ctx.fillStyle = luminance;
-//      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-//      }
-//      var eventLocked = false;
-
-//      function handleEvent(clientX, clientY) {
-//      if(eventLocked) {
-//      return;
-//      }
-//      function colourCorrect(v) {
-//      return Math.round(1023-(v*v)/64);
-//      }
-//      var data = ctx.getImageData(clientX, clientY, 1, 1).data;
-//      var params = [
-//      'r=' + colourCorrect(data[0]),
-//      'g=' + colourCorrect(data[1]),
-//      'b=' + colourCorrect(data[2])
-//      ].join('&');
-//      var req = new XMLHttpRequest();
-//      req.open('GET', 'setRGB'+'?' + params, true); //Handle readADC server on ESP8266
-// //     req.open('POST', '?' + params, true);
-//      req.send();
-//      eventLocked = true;
-//      req.onreadystatechange = function() {
-//      if(req.readyState == 4) {
-//      eventLocked = false;
-//      }
-//      }
-//      console.log(params);
-//      }
-
-//      canvas.addEventListener('click', function(event) {
-//      handleEvent(event.clientX, event.clientY, true);
-//      }, false);
-
-//      canvas.addEventListener('touchmove', function(event){
-//      handleEvent(event.touches[0].clientX, event.touches[0].clientY);
-//     }, false);
-     
-//      function resizeCanvas() {
-//      canvas.width = window.innerWidth/1.5;
-//      canvas.height = window.innerHeight/1.5;
-//      drawCanvas();
-//      }
-//      window.addEventListener('resize', resizeCanvas, false);
-//      resizeCanvas();
-//      drawCanvas();
-//      document.ontouchmove = function(e) {e.preventDefault()};
-//      })();
-// </script>
 
 <!-- Gauge Code -->
 <script type="text/javascript">
@@ -471,8 +378,8 @@ function getData() {
   var ADCValue = this.responseText; 
       T_values.push(ADCValue);
       timeStamp.push(time);
-        document.getElementById("tempGague").innerHTML = "دما \n" +String(ADCValue)+"°";
-document.getElementById("humidityGauge").innerHTML = "رطوبت \n" + String(ADCValue)+"%";
+        document.getElementById("tempGague").innerHTML = "دما "+"<br />"+ String(ADCValue)+"°";
+document.getElementById("humidityGauge").innerHTML = "رطوبت \n"+"<br />"+ String(ADCValue)+"%";
 //      Chart2.destroy();
       // showGraph();  //Update Graphs
       // showGauge();
@@ -601,42 +508,7 @@ document.getElementById("humidityGauge").innerHTML = "رطوبت \n" + String(AD
     );
 </script>
 
-<script type="text/javascript">
-    let app = (() => {
 
-  function updateSlider(element) {
-    if (element) {
-      let parent = element.parentElement,
-        lastValue = parent.getAttribute('data-slider-value');
-
-      if (lastValue === element.value) {
-        return; // No value change, no need to update then
-      }
-
-      parent.setAttribute('data-slider-value', element.value);
-      let $thumb = parent.querySelector('.range-slider__thumb'),
-        $bar = parent.querySelector('.range-slider__bar'),
-        pct = element.value * ((parent.clientHeight - $thumb.clientHeight) / parent.clientHeight);
-
-      $thumb.style.bottom = `${pct}%`;
-      $bar.style.height = `calc(${pct}% + ${$thumb.clientHeight/2}px)`;
-      $thumb.textContent = `${element.value}%`;
-    }
-  }
-  return {
-    updateSlider: updateSlider
-      };
-    })();
-
-    (function initAndSetupTheSliders() {
-      const inputs = [].slice.call(document.querySelectorAll('.range-slider input'));
-      inputs.forEach(input => input.setAttribute('value', '50'));
-      inputs.forEach(input => app.updateSlider(input));
-      // Cross-browser support where value changes instantly as you drag the handle, therefore two event types.
-      inputs.forEach(input => input.addEventListener('input', element => app.updateSlider(input)));
-      inputs.forEach(input => input.addEventListener('change', element => app.updateSlider(input)));
-    })();
-</script>
 
 <script>
 
@@ -689,8 +561,6 @@ var RainBowButton=document.getElementById("RainBowButton");
 </script>
 </body>
 </html>
-
-
 
 
 )=====";
