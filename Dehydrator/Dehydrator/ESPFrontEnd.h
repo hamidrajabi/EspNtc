@@ -1,6 +1,7 @@
 //Below the string splitted 
 const char webpage0[] PROGMEM = R"=====(
 
+
 <!DOCTYPE html><html><head><title lang="fa">سلام</title><meta name='mobile-web-app-capable' content='yes' />
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'>
 
@@ -36,9 +37,33 @@ const char webpage0[] PROGMEM = R"=====(
                         "footer footer footer";
         /* gap: 20px 5px; */
   /*grid-template-rows: 1fr 4fr 2fr 1fr 1fr;*/
-    } */
+    /* } */
 
- 
+.push_button{
+    display: inline-block;
+                outline: 0;
+                border: 0;
+                cursor: pointer;
+                will-change: box-shadow,transform;
+                background: radial-gradient( 100% 100% at 100% 0%, #89E5FF 0%, #db0e33 100% );
+                box-shadow: 0px 2px 4px rgb(45 35 66 / 40%), 0px 7px 13px -3px rgb(45 35 66 / 30%), inset 0px -3px 0px rgb(58 65 111 / 50%);
+                padding: 0 32px;
+                border-radius: 6px;
+                color: #fff;
+                height: 48px;
+                font-size: 18px;
+                text-shadow: 0 1px 0 rgb(0 0 0 / 40%);
+                transition: box-shadow 0.15s ease,transform 0.15s ease;
+              }
+              
+.push_button:hover{
+  box-shadow: 0px 4px 8px rgb(45 35 66 / 40%), 0px 7px 13px -3px rgb(45 35 66 / 30%), inset 0px -3px 0px #3c4fe0;
+                    transform: translateY(-2px);
+}
+.push_button:active{
+  box-shadow: inset 0px 3px 7px #3c4fe0;
+                    transform: translateY(2px);
+}
    .gasGraph{
       border-radius:20%;
       grid-area:GasGraph;
@@ -60,75 +85,8 @@ const char webpage0[] PROGMEM = R"=====(
     }
     
  
+
     
-    .timer{
-      border-radius:20%;
-      box-shadow: 5px 10px 18px #888888; 
-      /* display: inline-block; */
-      /* padding: 10px; */
-      width:100%;
-    }
-    
-    
-
-    .button {
-      width: 170px;
-      padding-top: 30px;
-      padding-bottom: 30px;
-      text-align: center;
-      color: #ffffff;
-      text-transform: uppercase;
-      font-weight: 600;
-      margin-left: 30px;
-      margin-bottom: 30px;
-      cursor: pointer;
-      display: inline-block;
-    }
-
-    .button-1 {
-      background-color: transparent;
-      border: 3px solid #00d7c3;
-      border-radius: 50px;
-      -webkit-transition: all .15s ease-in-out;
-      transition: all .15s ease-in-out;
-      color: #ffffff;
-    }
-
-    .button-1:hover {
-      box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 20px 2px #00d7c3;
-      border: 3px solid #00d7c3;
-    }
-
-    .timer {
-      font-family: sans-serif;
-      /* display: inline-block; */
-      border-radius: 30px;
-      background: gray;
-    }
-
-    .timer__part {
-      font-size: 36px;
-      font-weight: bold;
-    }
-
-    .timer__btn {
-      width: 50px;
-      height: 50px;
-      margin-left: 16px;
-      border-radius: 50%;
-      border: none;
-      color: white;
-      background: #8208e6;
-      cursor: pointer;
-    }
-
-    .timer__btn--start {
-      background: #00b84c;s
-    }
-
-    .timer__btn--stop {
-      background: #ff0256;
-    }
 </style>
 
 <!-- The chartJS library start -->
@@ -152,10 +110,11 @@ const char webpage0[] PROGMEM = R"=====(
 <body style='margin: 0px; padding: 0px;font-family:'iranSANS';'>
 
 <table  style="width:100%;height:100%;font-family:'iranSANS';">
+
   <tr>
     <th colspan="3" style="width:100%">
-    <div style="padding:10px;color:white;">
-        <h1 dir="rtl" class="header" style="text-align: center;">به پنل کنترل ویرادا  خوش آمدید.</h1>
+    <div style="padding:0 %;color:white;">
+        <h1 dir="rtl" class="header" style="text-align: center;font-size:100%">به پنل کنترل ویرادا  خوش آمدید.</h1>
     </div>
     </th>
   </tr>
@@ -179,23 +138,26 @@ const char webpage0[] PROGMEM = R"=====(
     <th >
       <form action="">
         <label for="temp">دما</label>
-        <input type="number" id="temp" name="quantity" min="0" max="150" style="font-size: 300%;">
-        <input type="button" onclick="submitTemp()" value="Submit">
+        <input type="number" id="temp-input" name="quantity" min="0" max="150" style="border-radius:15%;font-size: 300%;">
       </form>
     </th>
     <th >
       <form action="">
         <label for="temp">رطوبت</label>
-        <input type="number" id="temp" name="quantity" min="0" max="150" style="font-size: 300%;">
-        <input type="button" onclick="submitTemp()" value="Submit">
+        <input type="number" id="humidity-input" name="quantity" min="0" max="150" style="border-radius:15%;font-size: 300%;">
       </form>
     </th>
      <th >
       <form action="">
         <label for="temp">زمان</label>
-        <input type="number" id="temp" name="quantity" min="0" max="150" style="font-size: 300%;">
-        <input type="button" onclick="submitTemp()" value="Submit">
+        <input type="number" id="time-input" name="quantity" min="0" max="150" style="border-radius:15%;font-size: 300%;">
+        </form>
       </form>
+    </th>
+  </tr>
+  <tr>
+    <th colspan=3>
+    <button class="push_button" style="font-family:'iranSANS';width:70%" onclick="submitSettings()">ثبت تغییرات</button>
     </th>
   </tr>
   <tr>
@@ -216,11 +178,23 @@ const char webpage0[] PROGMEM = R"=====(
   document.getElementById("tempGague").innerHTML = "دما "+"<br />"+ +String(20)+"°";
   document.getElementById("humidityGauge").innerHTML = "رطوبت \n" +"<br />"+ String(2000000)+"%";
   document.getElementById("timeCounter").innerHTML = " زمان باقی مانده\n" +"<br />"+ "155 دقیقه";
-    function submitTemp() {
+    function submitSettings() {
       var req = new XMLHttpRequest();
-      var temp=document.getElementById("temp").value;
+
+      var set_temp=document.getElementById("temp-input").value;
+      var set_humidity=document.getElementById("humidity-input").value;
+      var set_time=document.getElementById("time-input").value;
+      var params = [
+     'set_temp=' + set_temp,
+     'set_humidity=' + set_humidity,
+     'set_time=' + set_time
+     ].join('&');
+
+     var req = new XMLHttpRequest();
+     req.open('GET', 'setRGB'+'?' + params, true); //Handle readADC server on ESP8266
+//     req.open('POST', '?' + params, true);
       console.log("set temp");
-      req.open('GET', 'setTemp'+'?' + "temp="+temp, true);
+      req.open('GET', 'setTemp'+'?' + "set_temp="+set_temp+'set_humidity'+'?' + "temp="+set_humidity+'set_time'+'?' + "temp="+set_time, true);
       req.send();
   }
 </script>
@@ -374,12 +348,18 @@ function getData() {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
      //Push the data in array
-  var time = new Date().toLocaleTimeString();
-  var ADCValue = this.responseText; 
-      T_values.push(ADCValue);
-      timeStamp.push(time);
-        document.getElementById("tempGague").innerHTML = "دما "+"<br />"+ String(ADCValue)+"°";
-document.getElementById("humidityGauge").innerHTML = "رطوبت \n"+"<br />"+ String(ADCValue)+"%";
+    var time = new Date().toLocaleTimeString();
+    var ADCValue = this.responseText; 
+    T_values.push(ADCValue);
+    
+    timeStamp.push(time);
+    document.getElementById("tempGague").innerHTML = "دما "+"<br />"+ JSON.parse(ADCValue).temperature+"°";
+    document.getElementById("humidityGauge").innerHTML = "رطوبت \n"+"<br />"+ JSON.parse(ADCValue).humidity+"%";
+
+    document.getElementById("temp-input").value=JSON.parse(ADCValue).set_temperature;
+    document.getElementById("humidity-input").value=JSON.parse(ADCValue).set_humidity;
+    document.getElementById("time-input").value=JSON.parse(ADCValue).set_time;
+
 //      Chart2.destroy();
       // showGraph();  //Update Graphs
       // showGauge();
@@ -561,6 +541,8 @@ var RainBowButton=document.getElementById("RainBowButton");
 </script>
 </body>
 </html>
+
+
 
 
 )=====";

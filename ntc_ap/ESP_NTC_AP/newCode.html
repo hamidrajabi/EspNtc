@@ -1,0 +1,273 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+
+<script src="https://cdn3.devexpress.com/jslib/17.1.6/js/dx.all.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/less" ></script>
+
+<style>
+// Vars
+$color--blue-dark: #395467;
+$color--gray: #212629;
+$color--gray-dark: #26323a;
+$color--white: #fff;
+$color--green: #25cd6b;
+$color--green-light: #a7db29;
+$color--yellow: #fbe500;
+$color--red: #e23131;
+$color--orange: #ed811c;
+$unit--spacing: 20px;
+
+* { box-sizing: border-box; }
+
+body {
+  background-image: linear-gradient(140deg, $color--gray, $color--blue-dark);
+  min-height: 100vh;
+  color: $color--white;
+  font-family: 'Open Sans', sans-serif;
+  position: relative;
+  padding-top: $unit--spacing * 4;
+}
+
+a {
+  color: lighten($color--blue-dark, 20%);
+  text-decoration: none;
+}
+
+.color-red { stop-color: $color--red; }
+.color-yellow { stop-color: $color--yellow;}
+.color-green { stop-color: $color--green; }
+
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: $color--gray-dark;
+  padding: $unit--spacing;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 3px;
+  word-spacing: 4px;
+  
+  a {
+    letter-spacing: 2px;
+    word-spacing: 2px;
+  }
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  &__title {
+    text-align: center;
+    font-size: 48px;
+  }
+}
+
+.gradient-mask { visibility: hidden; }
+
+.button {
+  position: absolute;
+  right: $unit--spacing * 2;
+  top: $unit--spacing * 2;
+  border: 2px solid $color--white;
+  background-color: $color--gray-dark;
+  color: $color--white;
+  font-weight: bold;
+  font-size: 16px;
+  padding: $unit--spacing / 2 $unit--spacing;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: .2s;
+  
+  &:active {
+    transform: translateY(3px);
+    outline: 0;
+  }
+  
+  &:hover,
+  &:focus {
+    outline: 0;
+    background: linear-gradient(-140deg, $color--gray, $color--blue-dark);
+  }
+}
+
+.gauge-container {
+  padding: $unit--spacing;
+  margin-top: $unit--spacing * 4;
+  display: flex;
+  justify-content: space-around;
+}
+
+.gauge {
+  height: 220px;
+  width: 300px;
+  
+  .dxg-range.dxg-background-range { fill: url(#gradientGauge); }
+  
+  .dxg-line {
+    transform: scaleX(1.04) scaleY(1.03) translate(-4px, -4px);
+
+    path:first-child,
+    path:last-child { display: none; }
+    path:nth-child(2),
+    path:nth-child(6) { stroke: $color--orange; }
+    path:nth-child(3),
+    path:nth-child(5) { stroke: $color--green-light; }
+    path:nth-child(4) { stroke: $color--green; }
+  }
+  
+  .dxg-elements {
+    text:first-child { transform: translate(19px, 13px); }
+    text:last-child { transform: translate(-27px, 14px); }
+  }
+  
+  .dxg-value-indicator {
+    path {
+      transform: scale(1.2) translate(0, -5px);
+      transform-origin: center center;
+    }
+    
+    .dxg-title {
+      text-transform: uppercase;
+      
+      text:first-child { transform: translateY(5px); }
+    }
+    
+    .dxg-spindle-border:nth-child(4),
+    .dxg-spindle-hole:nth-child(5){ transform: translate(0, -109px); }
+    .dxg-spindle-hole { fill: $color--gray-dark; }
+  }
+}
+</style>
+<main class="main">
+    <button id="random" class="button">Random value</button>
+    <h1 class="main__title">Gauge Chart</h1>
+    
+    <div class="gauge-container">
+      <div class="gauge"></div>
+  
+    </div>
+  </main>
+  
+  <footer class="footer">
+    <p>A pen by <a href="http://brunocarvalho.me">Bruno Carvalho</a></p>
+  </footer>
+  
+  <svg width="0" height="0" version="1.1" class="gradient-mask" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="gradientGauge">
+          <stop class="color-red" offset="0%"/>
+          <stop class="color-yellow" offset="17%"/>
+          <stop class="color-green" offset="40%"/>
+          <stop class="color-yellow" offset="87%"/>
+          <stop class="color-red" offset="100%"/>
+        </linearGradient>
+    </defs>  
+  </svg>
+
+  <script>
+$(function() {
+  
+  class GaugeChart {
+    constructor(element, params) {
+      this._element = element;
+      this._initialValue = params.initialValue;
+      this._higherValue = params.higherValue;
+      this._title = params.title;
+      this._subtitle = params.subtitle;
+    }
+    
+    _buildConfig() {
+      let element = this._element;
+      
+      return {
+        value: this._initialValue,
+        valueIndicator: {
+          color: '#fff'
+        },
+        geometry: {
+          startAngle: 180,
+          endAngle: 360
+        },
+        scale: {
+          startValue: 0,
+          endValue: this._higherValue,
+          customTicks: [0, 250, 500, 780, 1050, 1300, 1560],
+          tick: { 
+            length: 8
+          },
+          label: {
+            font: {
+              color: '#87959f',
+              size: 9,
+              family: '"Open Sans", sans-serif'
+            }
+          }
+        },
+        title: {
+          verticalAlignment: 'bottom',
+          text: this._title,
+          font: {
+            family: '"Open Sans", sans-serif',
+            color: '#fff',
+            size: 10
+          },
+          subtitle: {
+            text: this._subtitle,
+            font: {
+              family: '"Open Sans", sans-serif',
+              color: '#fff',
+              weight: 700,
+              size: 28
+            }
+          }
+        },
+        onInitialized: function() {
+          let currentGauge = $(element);
+          let circle = currentGauge.find('.dxg-spindle-hole').clone();
+          let border = currentGauge.find('.dxg-spindle-border').clone();
+
+          currentGauge.find('.dxg-title text').first().attr('y', 48);
+          currentGauge.find('.dxg-title text').last().attr('y', 28);
+          currentGauge.find('.dxg-value-indicator').append(border, circle);
+        }
+        
+      }
+    }
+    
+    init() {
+      $(this._element).dxCircularGauge(this._buildConfig());
+    }
+  }
+ 
+  $(document).ready(function () {
+    
+    $('.gauge').each(function(index, item){
+      let params = {
+        initialValue: 780,
+        higherValue: 1560,
+        title: `Temperature ${index + 1}`,
+        subtitle: '780 ºC'
+      };
+
+      let gauge = new GaugeChart(item, params);
+      gauge.init();
+    });
+    
+    $('#random').click(function() {
+
+      $('.gauge').each(function(index, item) {
+        let gauge = $(item).dxCircularGauge('instance');
+        let randomNum = Math.round(Math.random() * 1560);
+        let gaugeElement = $(gauge._$element[0]);
+
+        gaugeElement.find('.dxg-title text').last().html(`${randomNum} ºC`);
+        gauge.value(randomNum);
+      });
+    });
+  });
+  
+});
+  </script>

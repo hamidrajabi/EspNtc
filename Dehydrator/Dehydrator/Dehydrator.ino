@@ -5,7 +5,7 @@
 #include <ElegantOTA.h>
 
 #include "ESPFrontEnd.h"
-
+#include "DFRobot_SHT20.h"
 
 #include <ESP_EEPROM.h>
 
@@ -16,6 +16,7 @@ const byte DNS_PORT = 53;
 IPAddress apIP(192, 168, 1, 1);
 
 DNSServer dnsServer;
+DFRobot_SHT20 sht20(&Wire, SHT20_I2C_ADDR);
 
 const int ldrPin=5;
 const int touchPin=2                                                                                                                                                                     ;
@@ -55,6 +56,9 @@ const double C = 0.8062131944e-7;
 
 ESP8266WebServer webServer(80);
 
+int set_temperature; 
+int set_humidity;
+int set_time ;
 
 
 void ICACHE_RAM_ATTR TouchFunc()
@@ -106,16 +110,10 @@ void ICACHE_RAM_ATTR TurnOnLeds()
 
 void handleForm(){
   LightMode="Stable";
-  String red_pin = webServer.arg(0); 
-  String green_pin = webServer.arg(1);
-  String blue_pin = webServer.arg(2);
+   set_temperature = webServer.arg(0).toInt(); 
+   set_humidity = webServer.arg(1).toInt();
+   set_time = webServer.arg(2).toInt();
 
-if((red_pin != "") && (green_pin != "") && (blue_pin != ""))
-{ 
-  analogWrite(RedLED,1023-red_pin.toInt());
-  analogWrite(GreenLED,1023-green_pin.toInt());
-  analogWrite(BlueLED,1023-blue_pin.toInt());
-}
 
   webServer.send(302, "text/plain", "Updated-- Press Back Button");
 }
@@ -231,7 +229,7 @@ webServer.send_P(200, "text/html;charset=utf-8", webpage0);
 }
 
 void handleADC() {
-  double Vout, Rth, temperature, adc_value; 
+  double Vout, Rth,  adc_value; 
 
 for (int i=0; i<10;i++){
   adc_value += analogRead(A0);
@@ -239,25 +237,13 @@ for (int i=0; i<10;i++){
 }
 adc_value=adc_value/10;
 
-  Vout = (adc_value * VCC) / adc_resolution;
-  Rth = (VCC * R2 / Vout) - R2;
-  Serial.println(" adc value");
-  Serial.println(adc_value);
-  Serial.println("rth");
-  Serial.println(Rth);
+  double temperature = sht20.readTemperature();//33
+  double humidity=sht20.readHumidity();//33
 
-/*  Steinhart-Hart Thermistor Equation:
- *  Temperature in Kelvin = 1 / (A + B[ln(R)] + C[ln(R)]^3)
- *  where A = 0.001129148, B = 0.000234125 and C = 8.76741*10^-8  */
-  temperature = (1 / (A + (B * log(Rth)) + (C * pow((log(Rth)),3))));   // Temperature in kelvin
 
-  temperature = temperature - 273.15;  // Temperature in degree celsius
-  Serial.print("Temperature = ");
-  Serial.print(temperature);
-  Serial.println(" degree celsius");
-
- String adcValue = String(temperature);
+ String adcValue = "{\"temperature\":"+String(temperature)+",\"humidity\":"+String(humidity)+",\"set_temperature\":"+String(set_temperature)+",\"set_humidity\":"+String(set_humidity)+",\"set_time\":"+String(set_time)+"}";
 //  String adcValue=String(adc_value);
+
  webServer.send(200, "text/plane", adcValue); //Send ADC value only to client ajax request
 }
 
@@ -277,8 +263,11 @@ void setup() {
   WiFi.softAP("Virada Thermo");
 
   dnsServer.start(DNS_PORT, "*", apIP);
-
-    Serial.println(WiFi.softAPIP());
+ sht20.initSHT20();
+  delay(100);
+  sht20.checkSHT20();
+  
+  Serial.println(WiFi.softAPIP());
 
   pinMode(RedLED,OUTPUT);
   pinMode(GreenLED,OUTPUT);
